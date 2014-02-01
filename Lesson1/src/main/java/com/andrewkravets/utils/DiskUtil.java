@@ -11,12 +11,12 @@ import java.util.HashMap;
  */
 public class DiskUtil {
 
-    private static final String SAVE_PATH = "";
+    private static final String SAVE_PATH = "data.dat";
 
     public static void save(Serializable serializable) {
         ObjectOutputStream stream = null;
         try {
-            stream = new ObjectOutputStream(new FileOutputStream(SAVE_PATH));
+            stream = new ObjectOutputStream(new FileOutputStream(getBaseFile()));
             stream.writeObject(serializable);
         } catch (IOException e) {
             e.printStackTrace();
@@ -30,16 +30,19 @@ public class DiskUtil {
         }
     }
 
-    public static HashMap<String, Entry> loadData(){
+    public static HashMap<String, Entry> loadData() {
         ObjectInputStream objectInputStream = null;
-        HashMap<String, Entry> base= new HashMap<>();
-        try{
-            objectInputStream = new ObjectInputStream(new FileInputStream(SAVE_PATH));
-            base = (HashMap<String, Entry>) objectInputStream.readObject();
+        HashMap<String, Entry> base = new HashMap<>();
+        try {
+            File file = getBaseFile();
+            if (file.length() > 0) {
+                objectInputStream = new ObjectInputStream(new FileInputStream(file));
+                base = (HashMap<String, Entry>) objectInputStream.readObject();
+            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
-            if(objectInputStream!=null)
+            if (objectInputStream != null)
                 try {
                     objectInputStream.close();
                 } catch (IOException e) {
@@ -47,6 +50,17 @@ public class DiskUtil {
                 }
         }
         return base;
+    }
+
+    private static File getBaseFile() {
+        File data = new File(SAVE_PATH);
+        if (!data.exists())
+            try {
+                data.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        return data;
     }
 
 
