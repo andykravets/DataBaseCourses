@@ -7,7 +7,7 @@ import java.util.Scanner;
 /**
  * Created by akravets on 1/31/14.
  */
-public class MainInt {
+public class ConsoleMainInt {
     public static void main(String[] args) {
         PhoneBase database = new PhoneBase();
 
